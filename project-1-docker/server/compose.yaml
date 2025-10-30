@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  server-app:   # service name (can be "img" if you prefer)
+    build: .
+    container_name: server-app
+    ports:
+      - "8000:8000"
+
