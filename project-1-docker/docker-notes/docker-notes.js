@@ -379,9 +379,6 @@
 // ⚠️ Use when:
 // "docker stop" doesn’t respond or container is stuck
 
-
-
-
 // ------------------------------------------------------------
 // 🏗️ docker build → Build a Docker Image from a Dockerfile
 // ------------------------------------------------------------
@@ -408,6 +405,414 @@
 
 // ⚠️ Use when:
 // You’ve created or modified a Dockerfile and want to generate a new image
+
+// ------------------------------------------------------------
+// 🌐 docker run -p / --publish → Map Container Ports to Host
+// ------------------------------------------------------------
+
+// 🔹 Used to expose container ports to your local machine
+// 🔹 Allows access to apps running inside Docker (e.g., web servers)
+// 🔹 Maps HOST_PORT:CONTAINER_PORT → your computer ↔ container
+
+// Command:
+// docker run -p <host-port>:<container-port> <image-name>
+
+// 🧾 Example:
+//  docker run -p 18000:8000 my-app:9
+
+// ✅ What happens:
+// - The container runs from image "my-app:9"
+// - Inside the container, the app listens on port 8000
+// - On your computer, you can access it via port 18000 (http://localhost:18000)
+
+// ------------------------------------------------------------
+// 🧩 Short vs Long Flag
+// ------------------------------------------------------------
+// -p           → Short flag for port mapping
+// --publish    → Long form of the same flag
+// ❌ -port     → Invalid syntax (not recognized by Docker)
+
+// 🧱 Examples:
+// docker run -p 18000:8000 my-app:9
+// docker run --publish 18000:8000 my-app:9
+
+// 💡 In short:
+// "Expose your container’s internal port (8000) through your host machine’s port (18000)"
+
+// ------------------------------------------------------------
+// 🛑 STOP a running container
+// ------------------------------------------------------------
+
+// Syntax:
+// docker stop <container-id or container-name>
+
+// Example:
+// docker stop my-container
+// → Gracefully stops the running container named "my-container"
+
+// Note:
+// After stopping, the container still exists in stopped state
+// (use 'docker ps -a' to view it)
+
+// ------------------------------------------------------------
+// ▶️ START a stopped container
+// ------------------------------------------------------------
+
+// Syntax:
+// docker start <container-id or container-name>
+
+// Example:
+// docker start my-container
+// → Starts the previously stopped container (in background mode)
+
+// ------------------------------------------------------------
+// 🧠 If you want to ATTACH (see logs or interact):
+// ------------------------------------------------------------
+
+// Syntax:
+// docker start -ai <container-id or container-name>
+
+// Example:
+// docker start -ai my-container
+// → Starts container in interactive mode (attach to console)
+
+// ------------------------------------------------------------
+// 📜 View all containers (running + stopped):
+// ------------------------------------------------------------
+// docker ps -a
+// → Shows container IDs, names, status, and ports
+
+// ------------------------------------------------------------
+// ⚙️ docker run -it  vs  docker start -ai
+// ------------------------------------------------------------
+
+// 🧩 docker run -it
+// ------------------------------------------------------------
+// 🔹 Creates & runs a NEW container interactively
+// 🔹 Commonly used for launching a fresh container with a shell
+// 🔹 Flags:
+//     -i → Keeps STDIN open (interactive input)
+//     -t → Allocates a pseudo-TTY (terminal interface)
+// 🔹 Example:
+//     docker run -it ubuntu bash
+// 🔹 You start from scratch (a brand-new container)
+
+// 🧩 docker start -ai containername or id
+// ------------------------------------------------------------
+// 🔹 Starts an EXISTING stopped container interactively
+// 🔹 Used when you want to reattach to a container that was stopped
+// 🔹 Flags:
+//     -a → Attach to container’s STDOUT/STDERR
+//     -i → Keep STDIN open for interaction
+// 🔹 Example:
+//     docker start -ai beautiful_neumann
+// 🔹 You continue where you left off (an old container)
+
+// ✅ Summary:
+// ------------------------------------------------------------
+// docker run -it  → Start a NEW container interactively
+// docker start -ai → Resume a STOPPED container interactively
+
+// ------------------------------------------------------------
+// 🚀 docker run -it -P my-app:v11 → Run Container with Auto Port Mapping
+// ------------------------------------------------------------
+
+// 🔹 Creates and starts a new container from the image "my-app:v11"
+// 🔹 The app runs in interactive mode with a terminal attached
+//    -i → keeps input open (interactive mode)
+//    -t → allocates a terminal (so you can type commands)
+
+// ------------------------------------------------------------
+// 🌐 -P → Auto-Publish Exposed Ports
+// ------------------------------------------------------------
+// 🔸 Automatically maps all ports that were EXPOSED in the Dockerfile
+// 🔸 Docker randomly picks available ports on your computer
+//    and connects them to your container’s internal ports
+//
+// Example of automatic mapping:
+//    0.0.0.0:32768 -> 8000/tcp
+//    → Means: container port 8000 is accessible on your PC at port 32768
+//
+// 🧭 You can check which port was assigned using:
+//    docker ps
+//
+// ------------------------------------------------------------
+// 🧩 Summary:
+// - Creates and runs a container from image "my-app:v11"
+// - Interactive terminal access
+// - All exposed container ports get automatically connected
+// - Your app becomes accessible on a random host port (e.g., 32768)
+//
+// 🧾 Example Access:
+//   http://localhost:32768
+//
+// ------------------------------------------------------------
+// docker run -it -P my-app:v11
+
+// ✅ Command:
+// docker ps
+
+// ------------------------------------------------------------
+// 📋 docker ps → List Running Containers
+// ------------------------------------------------------------
+//
+// 🔹 Shows all containers that are currently RUNNING
+// 🔹 Helps you monitor container status, ports, and images in use
+//
+// ------------------------------------------------------------
+// 🧾 Output Columns Explained:
+// ------------------------------------------------------------
+// CONTAINER ID → Short unique ID for the container
+// IMAGE        → The Docker image used to create the container
+// COMMAND      → The process or command running inside the container
+// CREATED      → When the container was started
+// STATUS       → Shows if it’s Up (running), Exited (stopped), or Paused
+// PORTS        → Displays port mappings (e.g. 0.0.0.0:32768->8000/tcp)
+// NAMES        → The container’s name (auto-generated if not provided)
+//
+// ------------------------------------------------------------
+// 🧰 Common Variations:
+// ------------------------------------------------------------
+// docker ps                       → Show only running containers (default)
+// docker ps -a                    → Show ALL containers (running + stopped)
+// docker ps -q                    → Show only container IDs
+// docker ps --filter "status=exited" → Filter by status or name
+//
+// ------------------------------------------------------------
+// 🧭 Real-Life Analogy:
+// ------------------------------------------------------------
+// Think of this as Docker’s “Task Manager”
+// → It shows which containers are currently active and on which ports.
+//
+// ------------------------------------------------------------
+// 🧩 Example Output:
+// ------------------------------------------------------------
+// CONTAINER ID   IMAGE         STATUS         PORTS                     NAMES
+// a1b2c3d4e5f6   my-app:v11    Up 2 minutes   0.0.0.0:32768->8000/tcp   amazing_kalam
+
+
+
+
+
+// ✅ Command:
+// docker run -it -P --name my-app-11 my-app:v11
+
+// ------------------------------------------------------------
+// 🐳 docker run → Create and Start a New Container
+// ------------------------------------------------------------
+//
+// 🔹 This command runs a new container from the specified image
+// 🔹 It combines multiple useful flags to control container behavior
+//
+// ------------------------------------------------------------
+// ⚙️ Flag Breakdown:
+// ------------------------------------------------------------
+// -it          → Runs the container in INTERACTIVE mode with a terminal
+//                 (lets you type commands inside the container if needed)
+//
+// -P           → Automatically maps all EXPOSED ports in the Dockerfile
+//                 to random available ports on the host machine
+//                 e.g., 0.0.0.0:32768 → 8000/tcp
+//
+// --name       → Assigns a CUSTOM NAME to the container
+//                 (instead of a random auto-generated one)
+//                 e.g., "my-app-11"
+//
+// my-app:v11   → The image name and version (tag) to run
+//
+// ------------------------------------------------------------
+// 🧭 Real-Life Analogy:
+// ------------------------------------------------------------
+// Think of this as starting a virtual mini-computer (container) from a saved setup (image)
+// and giving it a name for easy identification later.
+//
+// ------------------------------------------------------------
+// 🧩 Example Behavior:
+// ------------------------------------------------------------
+// 1️⃣ Starts a new container using image "my-app:v11"
+// 2️⃣ Assigns it the name "my-app-11"
+// 3️⃣ Exposes app port(s) (like 8000) to a random host port
+// 4️⃣ Opens an interactive terminal session for real-time logs or commands
+//
+// ------------------------------------------------------------
+// ✅ Example Output (from `docker ps`):
+// ------------------------------------------------------------
+// CONTAINER ID   IMAGE         STATUS         PORTS                     NAMES
+// a1b2c3d4e5f6   my-app:v11    Up 3 minutes   0.0.0.0:32769->8000/tcp   my-app-11
+
+
+
+
+
+
+
+
+
+
+
+// ------------------------------------------------------------
+// 🚀 docker run -it --rm --name my-app-v14 my-app:v14
+// ------------------------------------------------------------
+//
+// 🧩 Purpose:
+// Runs a new container from the image "my-app:v14"
+// with interactive mode, auto-cleanup, and a custom name.
+//
+// ------------------------------------------------------------
+// ⚙️ Flags Explained:
+// ------------------------------------------------------------
+//
+// -it
+// → Runs container in Interactive + Terminal mode
+// → Lets you type commands directly inside the container
+//
+// --rm
+// → Automatically removes the container once it stops
+// → Keeps your system clean (no stopped containers left behind)
+//
+// --name my-app-v14
+// → Assigns a custom name to the container ("my-app-v14")
+// → Makes it easier to identify or manage later
+//
+// my-app:v14
+// → The Docker image name ("my-app") and its version tag ("v14")
+// → This image must exist locally or be pulled from a registry
+//
+// ------------------------------------------------------------
+// 🧭 Real-Life Analogy:
+// ------------------------------------------------------------
+// Think of this as starting a temporary virtual computer:
+// → It runs interactively
+// → You can use it freely
+// → And once you exit, it deletes itself automatically
+//
+// ------------------------------------------------------------
+// ✅ Example Usage:
+// ------------------------------------------------------------
+// docker run -it --rm --name express-server my-app:v14
+//
+// ------------------------------------------------------------
+// 💡 Tip:
+// ------------------------------------------------------------
+// If you want to keep the container after exit, remove `--rm`
+//
+// Command:
+// docker run -it --rm --name my-app-v14 my-app:v14
+
+
+
+
+
+
+
+// ------------------------------------------------------------
+// ⚙️ Docker Run Modes: -itd vs -it vs -d
+// ------------------------------------------------------------
+//
+// 🧩 Purpose:
+// These flags control how your container runs — interactively or in the background.
+//
+// ------------------------------------------------------------
+// 🔹 -it  → Interactive Mode
+// ------------------------------------------------------------
+// -i → Keeps STDIN open (so you can type commands)
+// -t → Allocates a pseudo-terminal (TTY) for interaction
+// ✅ Use when you want to run and interact directly inside the container
+// Example:
+//     docker run -it my-app:v14
+// 👉 You’ll be "inside" the container shell until you exit manually.
+//
+// ------------------------------------------------------------
+// 🔹 -d  → Detached Mode
+// ------------------------------------------------------------
+// -d → Runs the container in the background (no terminal attached)
+// ✅ Use when you want the container to run silently without blocking your terminal
+// Example:
+//     docker run -d my-app:v14
+// 👉 Container runs in background — you can continue using your terminal.
+//
+// ------------------------------------------------------------
+// 🔹 -itd  → Interactive + Detached Mode
+// ------------------------------------------------------------
+// Combination of interactive (-it) and detached (-d) flags
+// ✅ Useful if you might want to attach later or send input while keeping it backgrounded
+// Example:
+//     docker run -itd my-app:v14
+// 👉 Starts container in background, but keeps TTY open so you can attach later using:
+//     docker exec -it <container_name> /bin/sh
+//
+// ------------------------------------------------------------
+// 🧠 Summary:
+// ------------------------------------------------------------
+// Mode   | Runs in Background | Interactive Terminal | Typical Use
+// -------|--------------------|----------------------|-------------
+// -it    | ❌ No              | ✅ Yes               | Manual testing / debugging
+// -d     | ✅ Yes             | ❌ No                | Background services
+// -itd   | ✅ Yes             | ✅ Yes (reattachable) | Long-running interactive containers
+
+
+
+
+
+
+
+/* ------------------------------------------------------------
+🚀 docker run -itd -P --rm --name my-app-v14 my-app:v14
+------------------------------------------------------------
+🧩 Purpose:
+Runs a container from the image "my-app:v14" in the background (detached mode),
+with automatic port mapping, auto-cleanup, and a custom container name.
+
+------------------------------------------------------------
+⚙️ Flags Explained:
+------------------------------------------------------------
+-it   → Interactive terminal mode (keeps STDIN open + allocates a TTY)
+-d    → Detached mode (runs container in the background)
+-P    → Publishes all exposed ports to random host ports
+--rm  → Automatically removes the container after it stops
+--name my-app-v14 → Assigns a custom name to the container
+my-app:v14 → The image name and tag used to create the container
+
+💡 Example:
+This starts your container in the background and keeps your terminal free
+for other commands.
+------------------------------------------------------------
+*/
+
+/* ------------------------------------------------------------
+🚀 docker exec -it 81dc48f2e178a9cc45f8a5ce03d6ba1517273e93958a7bd372ae65bb0bec866e sh
+------------------------------------------------------------
+🧩 Purpose:
+Executes a new shell session (`sh`) inside a running container.
+Useful for debugging, checking logs, inspecting files, or running manual commands.
+
+------------------------------------------------------------
+⚙️ Flags Explained:
+------------------------------------------------------------
+exec  → Runs a new command inside an already running container
+-it   → Opens an interactive terminal session
+sh    → Starts the shell process inside the container
+
+💡 Example:
+You can enter into the container environment directly and execute commands.
+After finishing, type `exit` to leave the shell.
+Typing `exit` will free your terminal without stopping the container.
+------------------------------------------------------------
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
