@@ -806,6 +806,68 @@ Typing `exit` will free your terminal without stopping the container.
 
 
 
+/* ------------------------------------------------------------
+🚀 docker tag + docker push → Upload Image to Docker Hub
+------------------------------------------------------------
+
+🧩 Purpose:
+These two commands work together to publish a **local Docker image**
+to your **Docker Hub repository** (your online Docker account).
+
+------------------------------------------------------------
+⚙️ Step 1: Tag the Local Image
+------------------------------------------------------------
+docker tag my-app rinkesh375/rinkesh-first-repo
+
+🔹 "my-app" → Local image name (already built on your system)
+🔹 "rinkesh375/rinkesh-first-repo" → Repository name on Docker Hub
+
+🧠 Meaning:
+This command creates a *new tag (label)* for your local image.
+It does **NOT duplicate** or copy the image — it simply gives your
+local image a new "remote name" so Docker knows where to push it later.
+
+📍 Example:
+Before tagging:
+  my-app:latest (local only)
+
+After tagging:
+  my-app:latest (local)
+  rinkesh375/rinkesh-first-repo:latest (local, linked to Docker Hub)
+
+------------------------------------------------------------
+⚙️ Step 2: Push the Tagged Image to Docker Hub
+------------------------------------------------------------
+docker push rinkesh375/rinkesh-first-repo
+
+🔹 Uploads your *tagged local image* to your Docker Hub account.
+🔹 "rinkesh375" → Your Docker Hub username
+🔹 "rinkesh-first-repo" → Repository name under your account
+
+🧠 Meaning:
+Now the image is copied from your **local system** to your
+**Docker Hub cloud repository**, making it available publicly (or privately).
+
+------------------------------------------------------------
+🌐 Summary:
+------------------------------------------------------------
+Local Image (on your PC):
+  🏠 my-app:latest
+  🏠 rinkesh375/rinkesh-first-repo:latest
+
+Remote Repository (on Docker Hub):
+  🌎 docker.io/rinkesh375/rinkesh-first-repo:latest
+
+✅ After push:
+- You can pull it from anywhere using:
+    docker pull rinkesh375/rinkesh-first-repo
+
+- Your image now lives both locally and remotely on Docker Hub.
+------------------------------------------------------------ */
+
+
+
+
 
 
 
