@@ -590,10 +590,6 @@
 // CONTAINER ID   IMAGE         STATUS         PORTS                     NAMES
 // a1b2c3d4e5f6   my-app:v11    Up 2 minutes   0.0.0.0:32768->8000/tcp   amazing_kalam
 
-
-
-
-
 // ✅ Command:
 // docker run -it -P --name my-app-11 my-app:v11
 
@@ -639,16 +635,6 @@
 // ------------------------------------------------------------
 // CONTAINER ID   IMAGE         STATUS         PORTS                     NAMES
 // a1b2c3d4e5f6   my-app:v11    Up 3 minutes   0.0.0.0:32769->8000/tcp   my-app-11
-
-
-
-
-
-
-
-
-
-
 
 // ------------------------------------------------------------
 // 🚀 docker run -it --rm --name my-app-v14 my-app:v14
@@ -699,12 +685,6 @@
 // Command:
 // docker run -it --rm --name my-app-v14 my-app:v14
 
-
-
-
-
-
-
 // ------------------------------------------------------------
 // ⚙️ Docker Run Modes: -itd vs -it vs -d
 // ------------------------------------------------------------
@@ -750,12 +730,6 @@
 // -d     | ✅ Yes             | ❌ No                | Background services
 // -itd   | ✅ Yes             | ✅ Yes (reattachable) | Long-running interactive containers
 
-
-
-
-
-
-
 /* ------------------------------------------------------------
 🚀 docker run -itd -P --rm --name my-app-v14 my-app:v14
 ------------------------------------------------------------
@@ -799,12 +773,6 @@ After finishing, type `exit` to leave the shell.
 Typing `exit` will free your terminal without stopping the container.
 ------------------------------------------------------------
 */
-
-
-
-
-
-
 
 /* ------------------------------------------------------------
 🚀 docker tag + docker push → Upload Image to Docker Hub
@@ -865,15 +833,287 @@ Remote Repository (on Docker Hub):
 - Your image now lives both locally and remotely on Docker Hub.
 ------------------------------------------------------------ */
 
+/*
+
+############################################################
+# 🧱 DOCKER BUILD COMMAND EXPLANATION
+#
+# Command:
+#   docker build -t ts-app-old -f Dockerfile.old .
+#
+# 🔹 docker build
+#   → Tells Docker to build a new image using the instructions
+#     written inside a Dockerfile.
+#
+# 🔹 -t ts-app-old
+#   → The '-t' flag is used to assign a name (tag) to the image.
+#     In this case, the image will be saved as 'ts-app-old'.
+#     Example: You can run it later using `docker run ts-app-old`
+#
+# 🔹 -f Dockerfile.old
+#   → By default, Docker looks for a file named 'Dockerfile'.
+#     This flag tells Docker to use a custom Dockerfile
+#     called 'Dockerfile.old' instead.
+#
+# 🔹 .
+#   → The dot at the end represents the current directory.
+#     It acts as the "build context" — meaning Docker will
+#     include all files in this folder so they can be copied
+#     into the image during the build process.
+#
+# Example Summary:
+#   This command builds a Docker image using 'Dockerfile.old',
+#   includes the files from the current directory,
+#   and tags (names) the final image as 'ts-app-old'.
+############################################################
+
+
+*/
+
+/*
+# ------------------------------------------------------------
+# 🧩 docker exec -it container-id env
+# ------------------------------------------------------------
+# → This command runs a one-time process inside an already running container.
+# 
+# 🧠 Breakdown:
+#   • docker exec     → Used to execute a command inside a running container.
+#   • -i              → Keeps STDIN open (interactive mode).
+#   • -t              → Allocates a pseudo-terminal (so output looks normal).
+#   • 7e72de1dfe5b... → The container’s ID (can also use its name instead).
+#   • env             → The command to run inside the container — it lists
+#                       all environment variables currently active inside it.
+#
+# 🧾 In simple words:
+#   This shows you all environment variables (like PORT, PATH, NODE_ENV, etc.)
+#   that exist inside the running container.
+#
+# 🧩 Example:
+#   You might see output like:
+#     PATH=/usr/local/bin:/usr/bin:/bin
+#     NODE_VERSION=20.17.0
+#     PORT=3000
+#
+# ✅ Tip:
+#   You can also use `docker exec -it <container_id> sh` to enter the container
+#   and manually run commands like `echo $PORT` or `printenv`.
+# ------------------------------------------------------------
+
+*/
+
+/* ------------------------------------------------------------
+🧩 docker run -it -P -e PORT=3000 --rm --name node-ts-app node-ts-app
+---------------------------------------------------------------
+🧠 Breakdown of this command:
+
+• docker run  
+  → Used to start (run) a new container from an image.
+
+• -i  
+  → Keeps STDIN open (so you can interact with the container).
+
+• -t  
+  → Allocates a terminal interface — helps you see logs and interact better.
+
+• -P  
+  → Publishes all exposed ports in the Dockerfile to random ports on your computer.
+    Example: If your app exposes 3000, Docker might map it to 49160 on your PC.
+
+• -e PORT=3000  
+  → Sets an environment variable inside the container (here, PORT=3000).
+    This overrides the value of ENV PORT set in the Dockerfile.
+
+• --rm  
+  → Automatically removes the container once it stops.
+    (Useful for testing so it doesn’t leave unused containers behind.)
+
+• --name node-ts-app  
+  → Gives a readable name to the container instead of a random one.
+
+• node-ts-app  
+  → The name of the image from which the container is created and run.
+
+🧾 In simple words:
+  This command starts a new container named “node-ts-app” from the image “node-ts-app”,
+  sets PORT=3000 inside it, maps its ports to your computer automatically, and removes
+  the container after it stops.
+
+✅ Example analogy:
+  It’s like starting a virtual mini-computer (container) from your saved machine image
+  (Docker image), naming it “node-ts-app”, setting a custom configuration (PORT=3000),
+  and telling it to self-delete when it shuts down.
+------------------------------------------------------------ */
+
+
+
+/* ------------------------------------------------------------
+ 🧩 docker run -it -P -e PORT=3000 --rm --name node-ts-app node-ts-app
+
+ 📘 Explanation:
+ - "docker run" → Starts a new Docker container
+ - "-it" → Runs in interactive + terminal mode (you can view logs and interact)
+ - "-P" → Automatically maps all EXPOSEd ports from the Dockerfile to random ports on your host machine
+ - "-e PORT=3000" → Passes an environment variable directly to the container (PORT=3000)
+ - "--rm" → Automatically removes the container when it stops (keeps things clean)
+ - "--name node-ts-app" → Assigns a friendly name to this container
+ - "node-ts-app" → The image name from which the container will be created
+
+ 💡 Example Use Case:
+ Use this command when you want to quickly run your Node.js app in a clean container,
+ with a specific PORT variable and automatic port mapping enabled.
+------------------------------------------------------------ */
 
 
 
 
 
+/* 
+############################################################
+# 🌐 DOCKER NETWORK LIST COMMAND EXPLANATION
+#
+# Command:
+#   docker network ls
+#
+# 🔹 Purpose:
+#   Lists all the Docker networks available on your system.
+#   These networks define how containers communicate with each
+#   other and with the outside world.
+#
+# 🔹 Columns Explained:
+#   • NETWORK ID → Unique identifier for each Docker network.
+#   • NAME       → The name of the network (e.g., bridge, host, none).
+#   • DRIVER     → Defines how the network operates (bridge, host, null).
+#   • SCOPE      → Indicates where the network exists ('local' means
+#                   only on this Docker host).
+#
+# 🔹 Default Networks:
+#   • bridge → Default network; containers can talk to each other 
+#               using container names.
+#   • host   → Shares the host's network stack; no isolation.
+#   • none   → No network connectivity; fully isolated container.
+#
+# 🔹 Example Output:
+#   NETWORK ID     NAME      DRIVER    SCOPE
+#   91a9d516e6f4   bridge    bridge    local
+#   e85bd9f99dc8   host      host      local
+#   08a1cc940ca3   none      null      local
+#
+# 🧾 Summary:
+#   The `docker network ls` command helps you view and manage
+#   Docker's virtual networks that control container connectivity.
+############################################################
+*/
 
 
 
 
+
+/* ------------------------------------------------------------
+🌐 docker network inspect bridge
+---------------------------------------------------------------
+🔹 PURPOSE:
+This command shows **all details** of Docker’s default network called `bridge`.
+It helps you see how containers are connected and what IPs and settings Docker assigned.
+
+---------------------------------------------------------------
+📊 WHAT THIS OUTPUT MEANS:
+{
+  "Name": "bridge",                     # Name of the network (default = bridge)
+  "Id": "91a9d516e6f4...",              # Unique ID for this network
+  "Created": "2025-11-02T03:54:22...",  # When this bridge network was created
+  "Scope": "local",                     # Network is only on this Docker host
+  "Driver": "bridge",                   # Type of network (bridge = connects containers on same host)
+  "EnableIPv4": true,                   # IPv4 networking is ON
+  "EnableIPv6": false,                  # IPv6 is OFF (default)
+
+---------------------------------------------------------------
+🧭 IPAM (IP Address Management)
+"IPAM": {
+   "Driver": "default",                 # Uses Docker’s default IPAM driver
+   "Config": [
+      {
+        "Subnet": "172.17.0.0/16",     # Range of IPs for containers
+        "Gateway": "172.17.0.1"        # Default gateway (router for containers)
+      }
+   ]
+}
+
+---------------------------------------------------------------
+📦 Containers Connected:
+"Containers": {
+   "7fed49e79369...": {
+      "Name": "my-container2",          # Container name
+      "IPv4Address": "172.17.0.3/16",   # IP assigned to this container
+      "MacAddress": "02:42:1f:5d:07:36" # Its MAC address
+   },
+   "d0b99b6ff511...": {
+      "Name": "busybox-container",      # Another container connected
+      "IPv4Address": "172.17.0.2/16",   # IP assigned to it
+      "MacAddress": "7a:4a:01:67:e3:cb" # Its MAC address
+   }
+}
+
+👉 Both containers share the same network (bridge) so they can talk to each other 
+   using their IPs or container names.
+
+---------------------------------------------------------------
+⚙️ Options:
+"Options": {
+   "com.docker.network.bridge.default_bridge": "true",   # Marks this as the default bridge
+   "com.docker.network.bridge.enable_icc": "true",       # Containers can communicate with each other
+   "com.docker.network.bridge.enable_ip_masquerade": "true", # Allows containers to access the internet
+   "com.docker.network.bridge.host_binding_ipv4": "0.0.0.0", # Binds all interfaces on host
+   "com.docker.network.bridge.name": "docker0",          # Host interface name
+   "com.docker.network.driver.mtu": "1500"               # Max packet size
+}
+
+---------------------------------------------------------------
+🧠 SIMPLE SUMMARY:
+✅ You ran → `docker network inspect bridge`
+✅ It shows:
+   - Network name and type (bridge)
+   - IP range & gateway used
+   - All containers connected to it with their IPs
+   - Internal bridge interface on host (`docker0`)
+   - Options controlling communication and internet access
+
+---------------------------------------------------------------
+💡 WHY USE THIS:
+Use it to troubleshoot container connectivity,
+check IP addresses, or confirm which containers share the same network.
+--------------------------------------------------------------- */
+
+
+
+
+/* ------------------------------------------------------------
+🐳 docker exec busybox-container ping 172.17.0.3
+---------------------------------------------------------------
+# 🧠 Purpose:
+# Runs a command inside an already running Docker container 
+# to test network connectivity between containers.
+
+# 🔍 Explanation of each part:
+# - docker exec → Executes a command inside a running container.
+# - busybox-container → The name (or ID) of the container where the command will run.
+# - ping 172.17.0.3 → Sends ICMP packets to another container or host at IP 172.17.0.3
+#                     to check if it is reachable over the Docker network.
+
+# 🌐 Use Case:
+# This command is commonly used to verify that two containers can communicate 
+# within the same Docker network. For example, if one container runs an app 
+# and another runs a database, you can test their connection using ping.
+
+# ✅ Example Outcome:
+# - Successful ping → Confirms that network connectivity is working between containers.
+# - Failed ping → Indicates network isolation or misconfiguration.
+
+# 🧱 Example Scenario:
+# Suppose you have two containers:
+#   1️⃣ app-container (IP: 172.17.0.2)
+#   2️⃣ db-container (IP: 172.17.0.3)
+# You can run this command from app-container to test if it can reach db-container.
+------------------------------------------------------------ */
 
 
 
