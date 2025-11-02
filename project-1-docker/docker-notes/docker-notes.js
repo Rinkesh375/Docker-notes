@@ -1117,6 +1117,300 @@ check IP addresses, or confirm which containers share the same network.
 
 
 
+/* ------------------------------------------------------------
+🌌 docker network create milkyway
+---------------------------------------------------------------
+🔹 PURPOSE:
+This command creates a **new custom Docker network** named `milkyway`.
+
+By default, it uses the **bridge driver**, meaning it behaves like Docker’s 
+default "bridge" network but is **user-defined** — giving you more control.
+
+---------------------------------------------------------------
+🧠 WHAT HAPPENS WHEN YOU RUN IT:
+1️⃣ Docker creates a new **virtual network** (like a private Wi-Fi).
+2️⃣ It assigns a new **subnet range** (like 172.18.0.0/16).
+3️⃣ Any container you attach to this network will:
+    - Get a **unique IP** in this range.
+    - Be able to **communicate** with other containers on `milkyway`.
+    - Be **isolated** from containers in other networks (like default bridge).
+
+---------------------------------------------------------------
+📘 EXAMPLE:
+# Create network
+docker network create milkyway
+
+# Verify creation
+docker network ls
+
+Output:
+NETWORK ID     NAME        DRIVER    SCOPE
+91a9d516e6f4   bridge      bridge    local
+e85bd9f99dc8   host        host      local
+08a1cc940ca3   none        null      local
+a7d9bb77ea45   milkyway    bridge    local   ✅ <— new custom network
+
+---------------------------------------------------------------
+🧩 HOW TO USE IT:
+# Run a container in the 'milkyway' network
+docker run -dit --name earth --network milkyway busybox
+
+# Run another container in same network
+docker run -dit --name mars --network milkyway busybox
+
+→ Now both containers (earth & mars) can talk to each other
+   using their **container names** (DNS-based communication).
+
+Example inside a container:
+   ping mars   ✅ works
+   ping busybox-container ❌ won’t work (different network)
+
+---------------------------------------------------------------
+💬 IN SIMPLE WORDS:
+- You just created a **private local network** inside Docker called `milkyway`.
+- Containers you attach to it can **talk to each other**, but not with others outside.
+- It’s like creating a **separate Wi-Fi network** only for a few containers.
+
+---------------------------------------------------------------
+💡 TIP:
+To see detailed info about it:
+   docker network inspect milkyway
+--------------------------------------------------------------- */
+
+
+
+
+/* ------------------------------------------------------------
+🧩 docker run -itd --rm --network=milkyway --name=spider-man busybox
+
+⚙️ COMMAND BREAKDOWN:
+- `docker run` → Starts a new Docker container.
+- `-i` → Keeps STDIN open (interactive mode).
+- `-t` → Allocates a terminal for formatted output.
+- `-d` → Runs the container in detached mode (in background).
+- `--rm` → Automatically removes the container once it stops, 
+           keeping your system clean.
+- `--network=milkyway` → Connects this container to the 
+                         custom Docker network named "milkyway".
+- `--name=spider-man` → Assigns the container a custom name 
+                        ("spider-man") instead of a random one.
+- `busybox` → The lightweight Linux image used to run the container.
+
+🧠 WHAT HAPPENS:
+→ A new container named "spider-man" is created from the BusyBox image.  
+→ It connects to the "milkyway" bridge network.  
+→ Runs in the background and removes itself automatically when stopped.  
+
+🎯 USE CASE:
+Useful for creating quick, temporary containers to test 
+network connections or commands between multiple containers 
+in the same custom network (like "milkyway").
+------------------------------------------------------------ */
+
+
+
+
+
+
+/* 
+############################################################
+# 🌐 USER-DEFINED NETWORK IN DOCKER
+############################################################
+
+# 🧱 Command Example:
+#   docker network create milkyway
+#
+# → This creates a new custom (user-defined) network named "milkyway".
+#   Containers attached to this network can easily communicate with each other
+#   using their container names instead of IP addresses.
+
+------------------------------------------------------------
+# 🚀 WHY USE A USER-DEFINED NETWORK?
+------------------------------------------------------------
+
+🔹 1️⃣ Container Name Resolution (DNS)
+#   - Containers can talk using names instead of IPs.
+#   - ✅ No need to use or remember the IP address of other containers.
+#   - Example:
+#       docker run -dit --network=milkyway --name=spider-man busybox
+#       docker run -dit --network=milkyway --name=iron-man busybox
+#     Inside 'spider-man':
+#       ping iron-man     ✅ Works (automatic name resolution)
+
+------------------------------------------------------------
+🔹 2️⃣ Better Network Isolation
+#   - Containers on different networks can’t access each other.
+#   - Keeps environments separate (e.g., frontend vs backend).
+
+------------------------------------------------------------
+🔹 3️⃣ Custom Configuration
+#   - You can define your own subnet, gateway, and IP range.
+#   - Example:
+#       docker network create --subnet=192.168.10.0/24 my_custom_net
+
+------------------------------------------------------------
+🔹 4️⃣ Automatic DNS & Easier Linking
+#   - No need for deprecated '--link'.
+#   - Docker automatically manages DNS inside the custom network.
+
+------------------------------------------------------------
+🔹 5️⃣ Easier Maintenance
+#   - Container names remain the same even if IPs change.
+#   - Simplifies restarting and scaling containers.
+
+------------------------------------------------------------
+# 🧠 REAL-LIFE ANALOGY
+#   - Default 'bridge' network → Public Wi-Fi at a café (everyone can join but must use IPs)
+#   - User-defined network → Your home Wi-Fi (devices have names and connect securely)
+
+------------------------------------------------------------
+# ✅ SUMMARY TABLE
+# ----------------------------------------------------------
+# | Feature               | Default bridge | User-defined bridge |
+# |------------------------|----------------|---------------------|
+# | Name resolution        | ❌ Only by IP   | ✅ By container name |
+# | Isolation              | ❌ Shared       | ✅ Isolated          |
+# | Custom IP range        | ❌ No           | ✅ Yes               |
+# | Ease of use            | ⚙️ Basic        | 🚀 Advanced          |
+# | DNS support            | ❌ No           | ✅ Yes               |
+# ----------------------------------------------------------
+
+############################################################
+# 🧾 In simple words:
+# User-defined networks make containers communicate easily,
+# securely, and predictably — just like devices on your home Wi-Fi.
+# They can connect to each other directly by name, without using IPs.
+############################################################
+*/
+
+
+
+
+/*
+############################################################
+# 🔗 DOCKER NETWORK CONNECT COMMAND EXPLANATION
+############################################################
+
+# 🧱 Command:
+#   docker network connect milkyway my-container2
+#
+# → This command connects an existing container (`my-container2`)
+#   to an existing Docker network (`milkyway`).
+
+------------------------------------------------------------
+# 🧩 BREAKDOWN:
+# 🔹 docker network connect
+#     → Used to attach a running container to a network.
+
+# 🔹 milkyway
+#     → The name of the user-defined network you created earlier.
+#       Example: docker network create milkyway
+
+# 🔹 my-container2
+#     → The name of the existing container that you want to connect
+#       to the "milkyway" network.
+
+------------------------------------------------------------
+# 🧠 WHAT IT DOES:
+#   - Connects the container `my-container2` to the `milkyway` network.
+#   - After this, the container can communicate with other containers
+#     on the same network (like `spider-man`) using their **container names**.
+#   - The container now has access to multiple networks if it was already
+#     part of another one (e.g., the default `bridge` network).
+
+------------------------------------------------------------
+# 🧾 IN SIMPLE WORDS:
+#   You’re plugging `my-container2` into the “milkyway” Wi-Fi,
+#   so it can talk with all other containers in that network
+#   — no need to use IP addresses!
+
+------------------------------------------------------------
+# 🧪 EXAMPLE CHECK:
+#   docker exec -it my-container2 ping spider-man
+#   ✅ If both are in the same network, this will work.
+
+------------------------------------------------------------
+# 💡 TIP:
+#   - To disconnect it later:
+#       docker network disconnect milkyway my-container2
+#   - To see which networks a container is connected to:
+#       docker inspect my-container2 | grep -i networks
+############################################################
+*/
+
+
+
+
+
+
+
+/*
+############################################################
+# 🔌 DOCKER NETWORK DISCONNECT COMMAND
+############################################################
+
+# 🧱 Command:
+#   docker network disconnect milkyway dr
+#
+# → This command disconnects a container named "dr"
+#   from the Docker network named "milkyway".
+
+------------------------------------------------------------
+# 🧩 BREAKDOWN:
+# 🔹 docker network disconnect
+#     → Tells Docker to detach (unplug) a container from a network.
+
+# 🔹 milkyway
+#     → The name of the user-defined network you created earlier
+#       using: docker network create milkyway
+
+# 🔹 dr
+#     → The name (or ID) of the container you want to remove
+#       from the "milkyway" network.
+
+------------------------------------------------------------
+# 🧠 WHAT HAPPENS INTERNALLY:
+#   - Docker removes the network interface that connected
+#     the container `dr` to the `milkyway` network.
+#   - The container will no longer communicate with any containers
+#     that are part of the `milkyway` network.
+#   - The container itself keeps running (it is *not stopped*).
+
+------------------------------------------------------------
+# 🧾 IN SIMPLE WORDS:
+#   You are “unplugging” the container `dr` from the `milkyway` Wi-Fi.
+#   It will lose connection with all containers on that network.
+
+------------------------------------------------------------
+# 🧪 EXAMPLE:
+#   docker exec -it dr ping spider-man
+#   ❌ This will fail after disconnecting, since they’re no longer
+#      on the same network.
+
+------------------------------------------------------------
+# 💡 TIP:
+#   - To reconnect it again:
+#       docker network connect milkyway dr
+#   - To verify which networks a container is connected to:
+#       docker inspect dr | grep -i networks
+
+############################################################
+# 🧾 Summary:
+#   The `docker network disconnect` command removes a container
+#   from a specific network — just like disconnecting a device
+#   from a Wi-Fi network.
+############################################################
+*/
+
+
+
+
+
+
+
+
+
+
 
 // ============================================================
 // End of Docker Notes
