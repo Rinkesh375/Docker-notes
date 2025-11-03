@@ -6,15 +6,15 @@ import app from "./app/server";
 async function init() {
   try {
     console.log(`Connecting Redis...`);
-    const redis = new Redis("redis://localhost:6379", { lazyConnect: true });
+    const redis = new Redis("redis://redis:6379", { lazyConnect: true });
     await redis.connect();
     console.log(`Redis Connection Success...`);
 
     console.log(`Connecting Postgres...`);
     const { Client } = pg;
     const client = new Client({
-      host: "localhost", // internal Docker Compose service name
-      port: 5431, // internal Postgres port
+      host: "db", // internal Docker Compose service name
+      port: 5432, // internal Postgres port
       database: "postgres",
       user: "postgres",
       password: "postgres",

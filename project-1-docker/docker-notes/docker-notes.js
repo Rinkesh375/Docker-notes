@@ -1370,7 +1370,6 @@ in the same custom network (like "milkyway").
 ############################################################
 */
 
-
 /* ------------------------------------------------------------
 🧩 docker system df
 
@@ -1391,8 +1390,6 @@ in the same custom network (like "milkyway").
 #   You can clean unused data with →  docker system prune
 #   (Be careful — it removes all unused containers, networks, and images.)
 ------------------------------------------------------------ */
-
-
 
 /* ------------------------------------------------------------
 🧹 docker system prune -a --volumes -f
@@ -1419,8 +1416,6 @@ in the same custom network (like "milkyway").
 # 💡 Tip:
 #   Run `docker system df` before this command to see what’s taking up space.
 ------------------------------------------------------------ */
-
-
 
 /* ------------------------------------------------------------
 🧩 docker run -it --rm -v /mnt/c/Users/rinke/Desktop/docker-notes/testing:/home/ubuntu/rinkesh --name link-local-container ubuntu
@@ -1463,11 +1458,6 @@ in the same custom network (like "milkyway").
 #   between your host system and the container.
 ------------------------------------------------------------ */
 
-
-
-
-
-
 /* ------------------------------------------------------------
 🧩 docker run -it \
       --rm \
@@ -1486,12 +1476,6 @@ in the same custom network (like "milkyway").
 # ✅ Use "\" when a command has many options or arguments.
 # ✅ It helps organize complex Docker commands neatly and makes them easier to read.
 ------------------------------------------------------------ */
-
-
-
-
-
-
 
 /* ------------------------------------------------------------
 🧹 rm -rf COMMAND EXPLANATION
@@ -1533,9 +1517,6 @@ in the same custom network (like "milkyway").
 
 -------------------------------------------------------------- */
 
-
-
-
 /* ------------------------------------------------------------
 🧩 docker volume create custom_data
 
@@ -1558,8 +1539,6 @@ in the same custom network (like "milkyway").
    - A **USB drive** that containers can plug into to save or share data.
 
 ------------------------------------------------------------ */
-
-
 
 /* 
 ######################################################################
@@ -1604,12 +1583,6 @@ in the same custom network (like "milkyway").
 ######################################################################
 */
 
-
-
-
-
-
-
 /* ------------------------------------------------------------
 📘 Docker Volume Mounting Example — Same Volume, Different Paths
 -------------------------------------------------------------
@@ -1653,9 +1626,6 @@ cat /server2/notes.txt → Outputs: Hello from Ubuntu
 - Both connect to the same volume, so data stays the same
 - Even if containers are deleted, volume data remains
 ------------------------------------------------------------- */
-
-
-
 
 /*  Docker compose start here  */
 
@@ -1704,6 +1674,90 @@ cat /server2/notes.txt → Outputs: Hello from Ubuntu
 
 
 
+
+
+/* ------------------------------------------------------------
+🧩 Command: docker volume ls | grep post
+---------------------------------------------------------------
+🔹 `docker volume ls` → Lists all available Docker volumes.
+🔹 `|` (Pipe) → Passes the list output to the next command.
+🔹 `grep post` → Searches for and filters only the lines that contain
+   the word **"post"** (the filter keyword).
+
+💡 In short:
+"post" acts as a **filter keyword**, helping you quickly find
+volumes whose names contain the word "post" (e.g., postgres_data).
+
+------------------------------------------------------------ */
+
+
+
+
+/*
+
+# ------------------------------------------------------------
+# 🐳 Docker Compose — Common Commands & Their Uses
+# ------------------------------------------------------------
+
+# 🚀 Start containers (show logs in terminal)
+# docker compose up
+# → Builds (if needed) and starts all containers defined in docker-compose.yml.
+# → Displays container logs live in the terminal.
+# → Stop it anytime with Ctrl + C.
+
+# 🚀 Start containers in background (detached mode)
+# docker compose up -d
+# → Same as above, but runs containers in the background.
+# → You can continue using the terminal while containers run.
+
+# 🔄 Rebuild and restart containers
+# docker compose up --build
+# → Rebuilds images only if Dockerfile or source code changed.
+# → Keeps containers and data intact.
+
+# 🔁 Force rebuild and recreate all containers
+# docker compose up --build --force-recreate
+# → Rebuilds images AND recreates all containers from scratch.
+# → Useful when environment variables or configurations change.
+
+# 🧱 Stop and remove all containers, networks, and volumes
+# docker compose down --volumes
+# → Completely cleans up your setup (including DB or cache data).
+
+# 🧩 View all running containers for this project
+# docker compose ps
+# → Lists container names, ports, and current status.
+
+# 📜 View logs of all services (useful for debugging)
+# docker compose logs
+# → Displays logs from all containers.
+
+# 📜 View logs for a specific service (example: backend)
+# docker compose logs backend
+# → Shows logs only from the 'backend' container.
+
+# 🧰 Restart specific service
+# docker compose restart backend
+# → Restarts only the 'backend' container without affecting others.
+
+# ------------------------------------------------------------
+# 💡 Common Workflow Examples
+# ------------------------------------------------------------
+# ▶️ Start services (fresh build if needed)
+# docker compose up --build -d
+
+# 🧹 Stop everything and clean old data
+# docker compose down --volumes
+
+# 🪄 Full clean rebuild (complete reset)
+# docker compose down --volumes && docker compose up --build -d
+# ------------------------------------------------------------
+
+*/
+
+
+
+/*  Docker compose end here  */
 
 // ============================================================
 // End of Docker Notes

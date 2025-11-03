@@ -1,53 +1,129 @@
 # ------------------------------------------------------------
 # 🐳 Docker Compose Configuration for E-Commerce Project
 # ------------------------------------------------------------
-# This file defines two services:
-# 1️⃣ PostgreSQL - Database Service
-# 2️⃣ Redis      - Caching Service
+# This file defines three services:
+# 1️⃣ Backend - Custom Node/Express/Nest App
+# 2️⃣ PostgreSQL - Database Service
+# 3️⃣ Redis - Caching Service
 # ------------------------------------------------------------
 
-name: e-commerce   # Optional: sets a project name for Docker Compose
+name: e-commerce # Optional: sets a project name for Docker Compose
 
 services:
+  # ----------------------------------------------------------
+  # ⚙️ Backend Service
+  # ----------------------------------------------------------
+  backend:
+    build:
+      context: . # Build from current directory
+      dockerfile: Dockerfile # Use the Dockerfile present in this directory
+    container_name: backend # Name for the backend container
+    ports:
+      - "8000:8000" # Map local port 8000 → container port 8000
+    depends_on:
+      - db # Wait for PostgreSQL to start
+      - redis # Wait for Redis to start
+
+  # ------------------------------------------------------------
+  # 1️⃣ Build the backend image using the Dockerfile Equivalent CLI Commands (For Reference)
+  # ------------------------------------------------------------
+  # docker build -t backend .    
+  # 🧠 Meaning:
+  # - "docker build" → Builds a Docker image
+  # - "-t backend"   → Tags the image with the name "backend"
+  # - "."            → Uses the current directory as the build context (where Dockerfile is located)
+  # ------------------------------------------------------------
+
+
+  # ------------------------------------------------------------
+  # 2️⃣ Run the backend container using the built image
+  # ------------------------------------------------------------
+  # docker run -d --name backend \
+  #   -p 8000:8000 \
+  #   --link postgres \
+  #   --link redis \
+  #   backend
+  # 🧠 Meaning:
+  # - "-d"              → Run in detached (background) mode
+  # - "--name backend"  → Name the running container "backend"
+  # - "-p 8000:8000"    → Map local port 8000 → container port 8000
+  # - "--link postgres" → Connect to the PostgreSQL container (defined as 'db' in Compose)
+  # - "--link redis"    → Connect to the Redis container
+  # - "backend"         → The image name to use for running this container
+  # ------------------------------------------------------------
+
+
+
   # ----------------------------------------------------------
   # 🧩 PostgreSQL Database Service
   # ----------------------------------------------------------
   db:
-    image: postgres:16             # Use the official Postgres 16 image
-    container_name: postgres       # Assign a custom name to the container
-    environment:                   # Environment variables for database setup
-      POSTGRES_USER: postgres      # Database username
-      POSTGRES_PASSWORD: postgres  # Database password
-      POSTGRES_DB: postgres        # Default database name
+    image: postgres:16 # Use the official Postgres 16 image
+    container_name: postgres # Assign a custom name to the container
+    environment:
+      POSTGRES_USER: postgres # Database username
+      POSTGRES_PASSWORD: postgres # Database password
+      POSTGRES_DB: postgres # Default database name
     ports:
-      - "5431:5432"                # Map local port 5431 → container port 5432
+      - "5431:5432" # Maps local port 5431 → container port 5432 (for external access). 
+    # If the backend runs in another container within the same network,
+    # this port mapping is not required — they can communicate internally using the service name (db:5432).
+    # This is only needed if you want to connect to postgres from your host machine 
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Store PostgreSQL data persistently
 
   # ----------------------------------------------------------
   # ⚡ Redis Caching Service
   # ----------------------------------------------------------
   redis:
-    image: redis:7-alpine          # Lightweight Redis image (version 7)
-    container_name: redis          # Name of the Redis container
-
-    depends_on:                    # Ensures Redis starts after 'db' service
-      - db                         # Redis depends on PostgreSQL to start first first db should be started then this redis
-
+    image: redis:7-alpine # Lightweight Redis image (version 7)
+    container_name: redis # Name of the Redis container
+    depends_on:
+      - db # Ensures Redis starts after 'db' service
     ports:
-      - "6379:6379"                # Map local port 6379 → container port 6379
+      - "6379:6379" # Maps local port 6379 → container port 6379 (for external access).
+    # This is only needed if you want to connect to Redis from your host machine 
+    # (e.g., using RedisInsight or redis-cli locally).
+    # If the backend connects to Redis internally through the Docker network (using host: redis, port: 6379),
+    # this port mapping is not required.
+
+    volumes:
+      - redis_data:/data # Persistent volume for Redis cache data
 
 # ------------------------------------------------------------
-# 💡 Equivalent docker run commands (for reference)
+# 💾 Docker Volumes (Persistent Data Storage)
 # ------------------------------------------------------------
-# PostgreSQL:
-# docker run -d --name postgres \
-#   -e POSTGRES_USER=postgres \
-#   -e POSTGRES_PASSWORD=postgres \
-#   -e POSTGRES_DB=postgres \
-#   -p 5431:5432 postgres:16
-#
-# Redis (starts after DB in Compose):
-# docker run -d --name redis \
-#   -p 6379:6379 redis:7-alpine
-# ------------------------------------------------------------
+volumes:
+  postgres_data: # Volume for PostgreSQL data
+  redis_data:
+    # Volume for Redis cache data
 
-
+    # ------------------------------------------------------------
+    # 💡 Equivalent CLI Commands (For Reference)
+    # ------------------------------------------------------------
+    # 🧱 Create Volumes Manually:
+    # docker volume create postgres_data
+    # docker volume create redis_data
+    #
+    # 🔍 View All Volumes:
+    # docker volume ls | grep post
+    #
+    # 🧰 Run PostgreSQL Manually:
+    # docker run -d --name postgres \
+    #   -e POSTGRES_USER=postgres \
+    #   -e POSTGRES_PASSWORD=postgres \
+    #   -e POSTGRES_DB=postgres \
+    #   -v postgres_data:/var/lib/postgresql/data \
+    #   -p 5431:5432 postgres:16
+    #
+    # ⚙️ Run Redis Manually:
+    # docker run -d --name redis \
+    #   -p 6379:6379 \
+    #   -v redis_data:/data redis:7-alpine
+    #
+    # ♻️ Rebuild Services:
+    # docker compose up --build
+    #
+    # 🧹 Stop & Remove Containers:
+    # docker compose down
+    # ------------------------------------------------------------
