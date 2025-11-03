@@ -944,8 +944,6 @@ Remote Repository (on Docker Hub):
   and telling it to self-delete when it shuts down.
 ------------------------------------------------------------ */
 
-
-
 /* ------------------------------------------------------------
  🧩 docker run -it -P -e PORT=3000 --rm --name node-ts-app node-ts-app
 
@@ -962,10 +960,6 @@ Remote Repository (on Docker Hub):
  Use this command when you want to quickly run your Node.js app in a clean container,
  with a specific PORT variable and automatic port mapping enabled.
 ------------------------------------------------------------ */
-
-
-
-
 
 /* 
 ############################################################
@@ -1003,10 +997,6 @@ Remote Repository (on Docker Hub):
 #   Docker's virtual networks that control container connectivity.
 ############################################################
 */
-
-
-
-
 
 /* ------------------------------------------------------------
 🌐 docker network inspect bridge
@@ -1083,9 +1073,6 @@ Use it to troubleshoot container connectivity,
 check IP addresses, or confirm which containers share the same network.
 --------------------------------------------------------------- */
 
-
-
-
 /* ------------------------------------------------------------
 🐳 docker exec busybox-container ping 172.17.0.3
 ---------------------------------------------------------------
@@ -1114,8 +1101,6 @@ check IP addresses, or confirm which containers share the same network.
 #   2️⃣ db-container (IP: 172.17.0.3)
 # You can run this command from app-container to test if it can reach db-container.
 ------------------------------------------------------------ */
-
-
 
 /* ------------------------------------------------------------
 🌌 docker network create milkyway
@@ -1177,9 +1162,6 @@ To see detailed info about it:
    docker network inspect milkyway
 --------------------------------------------------------------- */
 
-
-
-
 /* ------------------------------------------------------------
 🧩 docker run -itd --rm --network=milkyway --name=spider-man busybox
 
@@ -1206,11 +1188,6 @@ Useful for creating quick, temporary containers to test
 network connections or commands between multiple containers 
 in the same custom network (like "milkyway").
 ------------------------------------------------------------ */
-
-
-
-
-
 
 /* 
 ############################################################
@@ -1283,9 +1260,6 @@ in the same custom network (like "milkyway").
 ############################################################
 */
 
-
-
-
 /*
 ############################################################
 # 🔗 DOCKER NETWORK CONNECT COMMAND EXPLANATION
@@ -1337,12 +1311,6 @@ in the same custom network (like "milkyway").
 #       docker inspect my-container2 | grep -i networks
 ############################################################
 */
-
-
-
-
-
-
 
 /*
 ############################################################
@@ -1403,10 +1371,288 @@ in the same custom network (like "milkyway").
 */
 
 
+/* ------------------------------------------------------------
+🧩 docker system df
+
+# 📦 Purpose:
+#   Shows the disk space usage by Docker components.
+
+# 📊 Displays:
+#   - Images: Docker images and how much space they use.
+#   - Containers: Space used by running and stopped containers.
+#   - Local Volumes: Storage used by named and anonymous volumes.
+#   - Build Cache: Space used by intermediate image layers.
+
+# ⚙️ Useful For:
+#   - Checking how much space Docker is consuming on your system.
+#   - Identifying what you can clean up to free disk space.
+
+# 🧹 Tip:
+#   You can clean unused data with →  docker system prune
+#   (Be careful — it removes all unused containers, networks, and images.)
+------------------------------------------------------------ */
+
+
+
+/* ------------------------------------------------------------
+🧹 docker system prune -a --volumes -f
+
+# 📦 Purpose:
+#   Cleans up your entire Docker environment by removing all unused data.
+
+# 🧾 What It Removes:
+#   - 🔹 Stopped containers
+#   - 🔹 Unused images (both dangling & unreferenced)
+#   - 🔹 Unused networks
+#   - 🔹 Unused volumes (because of the --volumes flag)
+#   - 🔹 Build cache
+
+# ⚙️ Flags Explanation:
+#   -a          → Remove all unused images, not just dangling ones.
+#   --volumes   → Also remove unused volumes (extra cleanup).
+#   -f          → Force removal without asking for confirmation.
+
+# ⚠️ Warning:
+#   This will permanently delete data that’s not actively used.
+#   Use it only if you’re sure you don’t need old images or containers.
+
+# 💡 Tip:
+#   Run `docker system df` before this command to see what’s taking up space.
+------------------------------------------------------------ */
+
+
+
+/* ------------------------------------------------------------
+🧩 docker run -it --rm -v /mnt/c/Users/rinke/Desktop/docker-notes/testing:/home/ubuntu/rinkesh --name link-local-container ubuntu
+------------------------------------------------------------
+# 🧱 Purpose:
+#   Runs a temporary Ubuntu container and mounts a folder from your
+#   local machine into the container — allowing you to share files
+#   between your computer and the container.
+
+# 🧠 Breakdown:
+#   • docker run
+#       → Creates and starts a new container.
+#
+#   • -it
+#       → Interactive mode with a terminal so you can type commands inside.
+#
+#   • --rm
+#       → Automatically removes the container when it stops (no leftovers).
+#
+#   • -v /mnt/c/Users/rinke/Desktop/docker-notes/testing:/home/ubuntu/rinkesh
+#       → Mounts (binds) a local folder into the container.
+#         Left side (before colon): local path on your computer.
+#         Right side (after colon): path inside the container.
+#         Any file created in one place will appear in the other.
+#
+#   • --name link-local-container
+#       → Assigns a readable name to the container for easy reference.
+#
+#   • ubuntu
+#       → Uses the official Ubuntu image as the container OS.
+
+# 🧾 Example:
+#   Any file you save in:
+#       /mnt/c/Users/rinke/Desktop/docker-notes/testing
+#   will be accessible inside the container at:
+#       /home/ubuntu/rinkesh
+
+# ✅ Tip:
+#   Use this method to share project files, logs, or code
+#   between your host system and the container.
+------------------------------------------------------------ */
 
 
 
 
+
+
+/* ------------------------------------------------------------
+🧩 docker run -it \
+      --rm \
+      --name my-container \
+      ubuntu
+
+# 🧠 Notes:
+# - The backslash "\" is called a *line continuation character*.
+# - It tells the shell that the command continues on the next line.
+# - This is only for better readability — it doesn’t change how the command works.
+# - Without "\", you would have to write everything in one long line.
+#
+# Example (same command in single line):
+#   docker run -it --rm --name my-container ubuntu
+#
+# ✅ Use "\" when a command has many options or arguments.
+# ✅ It helps organize complex Docker commands neatly and makes them easier to read.
+------------------------------------------------------------ */
+
+
+
+
+
+
+
+/* ------------------------------------------------------------
+🧹 rm -rf COMMAND EXPLANATION
+--------------------------------------------------------------
+# 🧱 Command:
+#   rm -rf <path>
+
+# 🔹 rm
+#   → Stands for "remove". It deletes files or directories.
+
+# 🔹 -r  (recursive)
+#   → Deletes folders and their contents (including subfolders).
+#   → Without this, `rm` can only delete individual files.
+
+# 🔹 -f  (force)
+#   → Forcefully deletes without asking for confirmation.
+#   → Ignores any errors (like “file not found” or permission issues).
+
+--------------------------------------------------------------
+# 🧾 Example:
+#   rm -rf testing
+#     → Deletes the folder named "testing" and everything inside it.
+
+#   rm -rf testing/*
+#     → Deletes all files inside "testing" folder, but keeps the folder itself.
+
+--------------------------------------------------------------
+# ⚠️ WARNING:
+#   Be extremely careful — this command permanently deletes data.
+#   Example of a dangerous command:
+#     ❌ rm -rf /
+#     → Would delete the entire Linux filesystem.
+
+--------------------------------------------------------------
+# ✅ Tip:
+#   • Run `ls` first to preview what will be deleted.
+#   • Double-check your path before pressing Enter.
+#   • Prefer running inside known directories to avoid accidents.
+
+-------------------------------------------------------------- */
+
+
+
+
+/* ------------------------------------------------------------
+🧩 docker volume create custom_data
+
+🔹 Purpose:
+   - Creates a new Docker volume named "custom_data".
+   - A volume is a persistent data storage managed by Docker.
+
+💡 Key Points:
+   - Volumes store data **outside** of the container’s filesystem.
+   - Data in a volume remains safe even if the container is removed.
+   - Can be **shared** between multiple containers.
+   - Helps in persisting logs, databases, or user-uploaded files.
+
+📦 Example:
+   docker run -it --rm -v custom_data:/app/data ubuntu
+
+   → Mounts the volume "custom_data" to /app/data inside the container.
+
+🧠 Think of it like:
+   - A **USB drive** that containers can plug into to save or share data.
+
+------------------------------------------------------------ */
+
+
+
+/* 
+######################################################################
+# 🧱 DOCKER VOLUME MOUNT COMMAND EXPLANATION
+#
+# Command:
+#   docker run -it --rm -v custom_data:/server ubuntu
+#
+# 🔹 docker run
+#     → Runs a new Docker container.
+#
+# 🔹 -it
+#     → Opens the container in interactive terminal mode.
+#
+# 🔹 --rm
+#     → Automatically removes the container when you exit it,
+#       keeping your system clean (no leftover containers).
+#
+# 🔹 -v custom_data:/server
+#     → Mounts (connects) a Docker volume named "custom_data"
+#       to the folder "/server" inside the container.
+#
+# 💾 Meaning:
+#   The folder "/server" inside the Ubuntu container is linked to
+#   the "custom_data" volume outside the container.
+#
+# 📂 Anything you store inside "/server" stays permanently in the volume,
+#   even after the container is deleted.
+#
+# 💡 Example:
+#   echo "Hello Rinkesh" > /server/note.txt
+#   → File is saved safely in the volume.
+#
+#   Next time you create a new container with the same volume,
+#   you’ll still find "note.txt" inside /server.
+#
+# ✅ Summary:
+#   This command creates a temporary Ubuntu container,
+#   links it to a persistent data volume ("custom_data"),
+#   and ensures your data inside "/server" survives
+#   even after the container is removed.
+######################################################################
+*/
+
+
+
+
+
+
+
+/* ------------------------------------------------------------
+📘 Docker Volume Mounting Example — Same Volume, Different Paths
+-------------------------------------------------------------
+
+🧩 Step 1: Create a new volume named "custom_data"
+→ This acts like a persistent folder on your system
+→ Path (internally): /var/lib/docker/volumes/custom_data/_data/
+
+Command:
+docker volume create custom_data
+
+
+🧩 Step 2: Run first container (Ubuntu)
+→ Mount the volume to "/server" inside the container
+→ Any file created in /server is saved inside the volume
+
+Command:
+docker run -it --rm -v custom_data:/server ubuntu
+
+Example inside the container:
+echo "Hello from Ubuntu" > /server/notes.txt
+exit
+
+
+🧩 Step 3: Run another container (BusyBox)
+→ Attach the same volume but mount it at a different path "/server2"
+→ Even though folder names differ (/server vs /server2),
+  both point to the same underlying storage (custom_data)
+
+Command:
+docker run -it --rm -v custom_data:/server2 busybox
+
+Example inside the container:
+ls /server2           → You'll still see "notes.txt"
+cat /server2/notes.txt → Outputs: Hello from Ubuntu
+
+
+🧠 Concept Summary:
+- Volume = shared, persistent storage managed by Docker
+- /server and /server2 are just container paths (mount points)
+- Both connect to the same volume, so data stays the same
+- Even if containers are deleted, volume data remains
+------------------------------------------------------------- */
 
 
 
