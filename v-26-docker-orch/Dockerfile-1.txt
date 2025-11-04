@@ -1,0 +1,33 @@
+# Use Ubuntu as the base image
+FROM ubuntu
+
+# Update package list and install curl & nano
+RUN apt-get update && apt-get install -y curl nano
+
+# Download Node.js 22.x setup script from NodeSource and save it to /tmp directory
+RUN curl -sL https://deb.nodesource.com/setup_22.x -o /tmp/nodesource_setup.sh
+
+# (Optional) Open the downloaded setup script in nano to inspect
+# Note: This line will open editor in container build and hang, best to remove or comment
+# RUN nano /tmp/nodesource_setup.sh
+
+# Run the NodeSource setup script to add the Node.js repo
+RUN bash /tmp/nodesource_setup.sh
+
+# Install Node.js using apt
+RUN apt-get install -y nodejs
+
+# Copy main application file to the container path /home/app
+COPY index.js /home/app/index.js
+
+# Copy package-lock.json file for dependency version consistency
+COPY package-lock.json /home/app/package-lock.json
+
+# Copy package.json file for project dependencies
+COPY package.json /home/app/package.json
+
+# Set working directory to /home/app inside the container
+WORKDIR /home/app
+
+# Install all dependencies listed in package.json
+RUN npm install

@@ -1670,12 +1670,6 @@ cat /server2/notes.txt → Outputs: Hello from Ubuntu
    - Simplifies multi-container app management
 ------------------------------------------------------------- */
 
-
-
-
-
-
-
 /* ------------------------------------------------------------
 🧩 Command: docker volume ls | grep post
 ---------------------------------------------------------------
@@ -1689,9 +1683,6 @@ cat /server2/notes.txt → Outputs: Hello from Ubuntu
 volumes whose names contain the word "post" (e.g., postgres_data).
 
 ------------------------------------------------------------ */
-
-
-
 
 /*
 
@@ -1755,9 +1746,9 @@ volumes whose names contain the word "post" (e.g., postgres_data).
 
 */
 
-
-
 /*  Docker compose end here  */
+
+/*  Docker Orchestration Start Here  */
 
 // ============================================================
 // End of Docker Notes
