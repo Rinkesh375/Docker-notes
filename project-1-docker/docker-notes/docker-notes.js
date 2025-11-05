@@ -1750,6 +1750,192 @@ volumes whose names contain the word "post" (e.g., postgres_data).
 
 /*  Docker Orchestration Start Here  */
 
+
+/* ------------------------------------------------------------
+ 🧱 Passing env variable while creating image
+ ------------------------------------------------------------
+# 🧩 Use this command to build the Docker image with all env vars
+
+docker build \
+  --build-arg VITE_SERVER_URL="http://localhost:4000" \
+  --build-arg VITE_RAZORPAY_KEY_ID="rzp_test_123456" \
+  --build-arg VITE_GA_ID="G-123ABC" \
+  --build-arg VITE_GTM_ID="GTM-XYZ123" \
+  --build-arg VITE_CLIENT_SECRET="secret_456xyz" \
+  -t my-vue-app .
+
+# 📦 Explanation:
+# --build-arg → passes environment variables at build-time
+# -t my-vue-app → names the built image
+# . → means build context is the current directory
+------------------------------------------------------------ */
+
+
+
+
+/*
+############################################################
+# 🐳 DOCKER BUILD WITH .ENV-STAGE FILE
+############################################################
+
+# 🧱 Command:
+#   docker build $(grep -v '^#' .env-stage | xargs -I {} echo --build-arg {}) -t my-vite-app .
+#
+# → This command builds a Docker image named `my-vite-app` 
+#   using build-time arguments from a `.env-stage` file.
+
+------------------------------------------------------------
+# 🧩 BREAKDOWN:
+# 🔹 docker build
+#     → Command to build a Docker image from a Dockerfile.
+#
+# 🔹 $(grep -v '^#' .env-stage | xargs -I {} echo --build-arg {})
+#     → Reads all non-comment lines from `.env-stage`.
+#     → Prepends `--build-arg` to each line so Docker receives them as build arguments.
+#     → Example: VITE_SERVER_URL=https://stage.example.com becomes
+#       --build-arg VITE_SERVER_URL=https://stage.example.com
+#
+# 🔹 -t my-vite-app
+#     → Tags the image with the name `my-vite-app`.
+#
+# 🔹 .
+#     → The build context (current directory), which includes your Dockerfile and app files.
+
+------------------------------------------------------------
+# 🧠 WHAT IT DOES:
+#   - Passes all environment variables in `.env-stage` as build arguments.
+#   - Docker matches each `--build-arg` to the corresponding `ARG` in the Dockerfile.
+#   - Variables are available at **build-time** inside the Dockerfile.
+#   - Order of variables in `.env-stage` does NOT matter; matching is by name.
+
+------------------------------------------------------------
+# 🧾 IN SIMPLE WORDS:
+#   You’re giving Docker all your build-time environment variables
+#   from a file, so you don’t have to manually type each `--build-arg`.
+
+------------------------------------------------------------
+# 💡 TIP:
+#   - Lines starting with `#` in `.env-stage` are ignored.
+#   - Extra variables in `.env-stage` not declared as `ARG` in Dockerfile are ignored.
+#   - If you want the variables to persist in the container, also use `ENV` in Dockerfile.
+############################################################
+*/
+
+/*
+############################################################
+# 🐳 DOCKER RUN WITH ENV-FILE
+############################################################
+
+# 🧱 Command:
+#   docker run -it --env-file ./.env.stage my-vite-app
+#
+# → This command runs a container from the `my-vite-app` image,
+#   loading environment variables from the `.env.stage` file.
+
+------------------------------------------------------------
+# 🧩 BREAKDOWN:
+# 🔹 docker run
+#     → Command to create and start a Docker container.
+#
+# 🔹 -it
+#     → -i → Interactive mode: keeps STDIN open.
+#     → -t → Allocates a TTY (terminal) for interactive use.
+#
+# 🔹 --env-file ./.env.stage
+#     → Loads all environment variables from `.env.stage` into the container.
+#     → Example: VITE_SERVER_URL=https://stage.example.com
+#
+# 🔹 my-vite-app
+#     → The name of the Docker image to run.
+
+------------------------------------------------------------
+# 🧠 WHAT IT DOES:
+#   - Starts a container interactively.
+#   - Makes all variables from `.env.stage` available **at runtime**.
+#   - No need to manually set `-e VAR=value` for each variable.
+
+------------------------------------------------------------
+# 🧾 IN SIMPLE WORDS:
+#   You’re giving your running container all the environment variables
+#   from a file, so your app has the correct configuration without manual typing.
+
+------------------------------------------------------------
+# 💡 TIP:
+#   - To detach the container and run in background:
+#       docker run -d --env-file ./.env.stage my-vite-app
+#   - To override a variable at runtime:
+#       docker run -it -e VITE_SERVER_URL=https://override.com --env-file ./.env.stage my-vite-app
+############################################################
+*/
+
+
+
+
+/*
+############################################################
+# 🐳 CHECK ENVIRONMENT VARIABLES IN DOCKER CONTAINER
+############################################################
+
+------------------------------------------------------------
+# 🧱 Commands:
+
+# 1️⃣ List all environment variables inside a running container:
+#   docker exec -it <container_name_or_id> env
+
+# 2️⃣ List all environment variables (or a specific one) inside a container:
+#   docker exec -it <container_name_or_id> printenv
+#   Example: printenv VITE_SERVER_URL
+
+------------------------------------------------------------
+# 🧩 BREAKDOWN:
+
+# 🔹 docker exec
+#     → Run a command in a running container.
+
+# 🔹 -it
+#     → -i → Keep STDIN open (interactive mode)
+#     → -t → Allocate a TTY (terminal), so output is readable
+
+# 🔹 <container_name_or_id>
+#     → Replace with your container's name or ID (check using `docker ps`)
+
+# 🔹 env
+#     → Prints all environment variables inside the container.
+
+# 🔹 printenv
+#     → Prints all environment variables.
+#     → If a variable name is provided, prints only that variable's value.
+
+------------------------------------------------------------
+# 🧠 WHAT IT DOES:
+
+# - Both commands allow you to inspect environment variables of a running container.
+# - `env` is also useful for temporarily running commands with modified variables.
+# - `printenv` is simpler if you want to **check a specific variable**.
+
+------------------------------------------------------------
+# 🧾 IN SIMPLE WORDS:
+
+#   You're opening the container and asking it:
+#   "Hey, tell me all the variables you know about!" 
+#   or "Give me the value of this one variable."
+
+------------------------------------------------------------
+# 💡 TIP:
+
+# - To see container names/IDs:
+#     docker ps
+# - To check a specific variable:
+#     docker exec -it <container_name_or_id> printenv VITE_SERVER_URL
+# - For interactive shell access (and more checks):
+#     docker exec -it <container_name_or_id> /bin/sh
+############################################################
+*/
+
+
+
+
+
 // ============================================================
 // End of Docker Notes
 // ============================================================
