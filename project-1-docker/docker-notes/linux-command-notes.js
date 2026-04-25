@@ -37,3 +37,32 @@
 #   • Prefer running inside known directories to avoid accidents.
 
 -------------------------------------------------------------- */
+
+/*
+  Command:
+  mkdir -p dev-ops-docker
+
+  This command creates a directory named "dev-ops-docker".
+
+  The "-p" flag means:
+  - Create the directory only if it does not already exist
+  - Do NOT throw an error if the directory already exists
+  - Create parent directories as needed
+
+  If the directory "dev-ops-docker" already exists,
+  the command will silently succeed without any error.
+
+  This is commonly used in scripts and CI/CD pipelines
+  to safely ensure a directory exists before using it.
+*/
+
+
+
+
+
+
+
+
+
+
+

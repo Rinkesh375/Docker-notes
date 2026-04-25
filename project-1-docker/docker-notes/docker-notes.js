@@ -1936,6 +1936,80 @@ docker build \
 
 
 
+/*
+docker exec -it <container_name> /bin/sh
+--------------------------------------
+- Used to enter inside a running Docker container
+- Allows executing commands inside the container
+- Useful for debugging and inspecting container state
+- Does NOT create a new container, uses an existing one
+- Container must be in running state
+- -i keeps the terminal interactive
+- -t allocates a pseudo terminal (TTY)
+- /bin/sh starts a shell inside the container
+- Commonly used when /bin/bash is not available
+- Changes made inside container are temporary unless volumes are used
+*/
+
+
 // ============================================================
 // End of Docker Notes
 // ============================================================
+
+
+
+
+
+/*
+CMD vs RUN in Dockerfile
+
+RUN:
+- Executes during the Docker image build process.
+- Used to install packages, dependencies, and configure the environment.
+- Creates a new layer in the Docker image.
+- Runs only once when the image is built.
+
+CMD:
+- Specifies the default command to run when a container starts.
+- Executes every time the container runs.
+- Used to start the main application inside the container.
+- Only the last CMD instruction in a Dockerfile is used.
+
+Example:
+
+RUN npm install        -> runs during docker build
+CMD ["node","app.js"]  -> runs when docker run is executed
+*/
+
+
+
+
+
+
+/*
+docker attach <container-id>
+
+This command connects your terminal to a running Docker container.
+
+It attaches your terminal to the container's standard input,
+standard output, and error streams so you can see the live logs
+or interact with the running process inside the container.
+
+Example:
+docker attach a1b2c3d4e5
+
+Important:
+- You will see the live output of the container.
+- If you press CTRL + C while attached, the container may stop
+  because it sends an interrupt signal to the main process.
+
+To safely detach from the container without stopping it:
+Press CTRL + P then CTRL + Q.
+*/
+
+
+
+
+
+
+
