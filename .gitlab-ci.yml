@@ -1,0 +1,73 @@
+stages:
+  - install
+  - test
+  - build
+  - deploy
+
+# =========================
+# INSTALL STAGE
+# =========================
+
+frontend_install:
+  stage: install
+  script:
+    - echo "Installing frontend dependencies"
+    - cd frontend
+    - npm install
+
+backend_install:
+  stage: install
+  script:
+    - echo "Installing backend dependencies"
+    - cd backend
+    - npm install
+
+# =========================
+# TEST STAGE
+# =========================
+
+frontend_test:
+  stage: test
+  script:
+    - echo "Running frontend tests"
+    - cd frontend
+    - npm run test
+
+backend_test:
+  stage: test
+  script:
+    - echo "Running backend tests"
+    - cd backend
+    - npm run test
+
+security_scan:
+  stage: test
+  script:
+    - echo "Running security scan"
+    - npm audit
+
+# =========================
+# BUILD STAGE
+# =========================
+
+docker_build_frontend:
+  stage: build
+  script:
+    - echo "Building frontend docker image"
+    - docker build -t myapp-frontend ./frontend
+
+docker_build_backend:
+  stage: build
+  script:
+    - echo "Building backend docker image"
+    - docker build -t myapp-backend ./backend
+
+# =========================
+# DEPLOY STAGE
+# =========================
+
+deploy_production:
+  stage: deploy
+  script:
+    - echo "Deploying application to production server"
+    - docker compose up -d
